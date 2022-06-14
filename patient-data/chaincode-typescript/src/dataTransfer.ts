@@ -21,7 +21,7 @@ export class DataTransferContract extends Contract {
                 EyeColor: 'brown',
                 BloodGroup:"B+",
                 Name:"Vinay",
-            }
+            },
         ];
 
         for (const asset of assets) {
@@ -37,6 +37,7 @@ export class DataTransferContract extends Contract {
         // range query with empty string for startKey and endKey does an open-ended query of all assets in the chaincode namespace.
         const iterator = await ctx.stub.getStateByRange('', '');
         let result = await iterator.next();
+
         while (!result.done) {
             const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
             let record;
@@ -49,7 +50,8 @@ export class DataTransferContract extends Contract {
             allResults.push({Key: result.value.key, Record: record});
             result = await iterator.next();
         }
-        return JSON.stringify(allResults);
+        
+        return JSON.stringify(result);
     }
 
     // CreateAsset issues a new asset to the world state with given details.
