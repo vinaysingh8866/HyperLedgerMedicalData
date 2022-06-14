@@ -1,4 +1,3 @@
-./network.sh up createChannel -c mychannel -ca
 export PATH=${PWD}/../bin:$PATH
 export FABRIC_CFG_PATH=$PWD/../config/
 export CORE_PEER_TLS_ENABLED=true
