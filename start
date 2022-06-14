@@ -1,3 +1,4 @@
+curl -sSL https://bit.ly/2ysbOFE | bash -s -- 2.2.0 1.4.9
 export PATH=${PWD}/../bin:$PATH
 export FABRIC_CFG_PATH=$PWD/../config/
 export CORE_PEER_TLS_ENABLED=true
@@ -6,3 +7,4 @@ export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org1.e
 export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
 export CORE_PEER_ADDRESS=localhost:7051
 ./network.sh up createChannel -c mychannel -ca && ./network.sh deployCC -ccn basic -ccp ../patient-data/chaincode-typescript/ -ccl typescript
+peer chaincode query -C mychannel -n basic -c '{"Args":["GetAllAssets"]}'
