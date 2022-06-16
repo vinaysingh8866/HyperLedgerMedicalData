@@ -4,14 +4,21 @@
 
 import {Object, Property} from 'fabric-contract-api';
 
+
+interface InsulinData {
+    id: string;
+    date:string;
+    data: object;
+}
+
 @Object()
-export class Asset {
+export class Insulin {
 
     @Property()
     public ID: string;
 
     @Property()
-    public EyeColor: string;
+    public data: InsulinData[];
 
     @Property()
     public Name: string;
