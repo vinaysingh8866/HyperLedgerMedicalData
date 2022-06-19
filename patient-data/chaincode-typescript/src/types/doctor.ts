@@ -3,26 +3,24 @@
 */
 
 import {Object, Property} from 'fabric-contract-api';
-import { Insulin } from './insulin';
+import { Patient } from './patient';
 
 @Object()
-export class Patient {
+export class Doctor {
 
     @Property()
     public ID: string;
 
     @Property()
-    public EyeColor: string;
+    public Speciality: string[];
 
     @Property()
     public Name: string;
 
     @Property()
-    public BloodGroup: string;
-
-    @Property()
-    public InsulinData?: Insulin[];
+    public Patients?: Patient[];
 
     @Property()
     public docType?: string;
+
 }

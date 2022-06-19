@@ -19,11 +19,4 @@ export class Insulin {
 
     @Property()
     public data: InsulinData[];
-
-    @Property()
-    public Name: string;
-
-    @Property()
-    public BloodGroup: string;
-
 }

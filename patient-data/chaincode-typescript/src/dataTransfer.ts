@@ -3,6 +3,7 @@
  */
 
 import { Context, Contract, Info, Returns, Transaction } from 'fabric-contract-api';
+import { Doctor } from './types/doctor';
 import { Insulin } from './types/insulin';
 import { Patient } from './types/patient';
 
@@ -54,6 +55,18 @@ export class DataTransferContract extends Contract {
             EyeColor: _EyeColor,
             Name: _Name,
             BloodGroup: _BloodGroup,
+            docType:"patient"
+        };
+        await ctx.stub.putState(_ID, Buffer.from(JSON.stringify(asset)));
+    }
+
+    @Transaction()
+    public async CreateDoctor(ctx: Context, _ID: string, _Speciality: string[], _Name: string, _BloodGroup: string): Promise<vo_ID> {
+        const asset: Doctor = {
+            ID: _ID,
+            Name: _Name,
+            Speciality:_Speciality,
+            docType:"doctor"
         };
         await ctx.stub.putState(_ID, Buffer.from(JSON.stringify(asset)));
     }
@@ -86,11 +99,12 @@ export class DataTransferContract extends Contract {
         let iData: Insulin[] = patient.InsulinData
         iData.push(_InsulinData)
         const updatedPatient: Patient = {
-            ID: '',
-            EyeColor: '',
-            Name: '',
-            BloodGroup: '',
-            InsulinData: iData
+            ID: patient.ID,
+            EyeColor: patient.EyeColor,
+            Name: patient.Name,
+            BloodGroup: patient.BloodGroup,
+            InsulinData: iData,
+            docType:patient.docType
         }
 
         return ctx.stub.putState(_ID, Buffer.from(JSON.stringify(updatedPatient)));
