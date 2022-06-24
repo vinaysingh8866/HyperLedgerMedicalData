@@ -49,7 +49,7 @@ export class DataTransferContract extends Contract {
 
     // @notice CreatePatient issues a new Patient to the world state with given details.
     @Transaction()
-    public async CreatePatient(ctx: Context, _ID: string, _EyeColor: string, _Name: string, _BloodGroup: string): Promise<vo_ID> {
+    public async CreatePatient(ctx: Context, _ID: string, _EyeColor: string, _Name: string, _BloodGroup: string): Promise<void> {
         const asset: Patient = {
             ID: _ID,
             EyeColor: _EyeColor,
@@ -61,7 +61,7 @@ export class DataTransferContract extends Contract {
     }
 
     @Transaction()
-    public async CreateDoctor(ctx: Context, _ID: string, _Speciality: string[], _Name: string, _BloodGroup: string): Promise<vo_ID> {
+    public async CreateDoctor(ctx: Context, _ID: string, _Speciality: string[], _Name: string, _BloodGroup: string): Promise<void> {
         const asset: Doctor = {
             ID: _ID,
             Name: _Name,
@@ -94,12 +94,9 @@ export class DataTransferContract extends Contract {
         }
 
         // overwriting original patient data with new data
-
         const patient: Patient = await this.ReadPatient(ctx, _ID)
-        patient.
-        let iData: Insulin[] = patient.InsulinData
-        iData.push(_InsulinData)
-        patient.InsulinData = iData
+        patient.InsulinData.push(_InsulinData)
+
         return ctx.stub.putState(_ID, Buffer.from(JSON.stringify(patient)));
     }
 
