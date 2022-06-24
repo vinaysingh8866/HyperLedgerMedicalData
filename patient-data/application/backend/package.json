@@ -2,18 +2,12 @@
   "name": "backend",
   "version": "0.0.0",
   "description": "TypeScript + Routing Controllers + Express API Server",
-  "author": "",
+  "author": "Vinay Singh",
   "license": "ISC",
+  "moduleResolution": "node",
   "scripts": {
-    "start": "npm run build && cross-env NODE_ENV=production node dist/server.js",
-    "dev": "cross-env NODE_ENV=development nodemon",
-    "build": "swc src -d dist --source-maps --copy-files",
-    "build:tsc": "tsc && tsc-alias",
-    "test": "jest --forceExit --detectOpenHandles",
-    "lint": "eslint --ignore-path .gitignore --ext .ts src/",
-    "lint:fix": "npm run lint -- --fix",
-    "deploy:prod": "npm run build && pm2 start ecosystem.config.js --only prod",
-    "deploy:dev": "pm2 start ecosystem.config.js --only dev"
+    "start": "npm run build && node dist/server.js",
+    "build": "tsc"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
@@ -26,6 +20,8 @@
     "dotenv": "^10.0.0",
     "envalid": "^7.1.0",
     "express": "^4.17.1",
+    "fabric-ca-client": "^2.2.13",
+    "fabric-network": "^2.2.13",
     "helmet": "^4.6.0",
     "hpp": "^0.2.3",
     "jsonwebtoken": "^8.5.1",
