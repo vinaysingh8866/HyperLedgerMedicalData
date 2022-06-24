@@ -96,18 +96,11 @@ export class DataTransferContract extends Contract {
         // overwriting original patient data with new data
 
         const patient: Patient = await this.ReadPatient(ctx, _ID)
+        patient.
         let iData: Insulin[] = patient.InsulinData
         iData.push(_InsulinData)
-        const updatedPatient: Patient = {
-            ID: patient.ID,
-            EyeColor: patient.EyeColor,
-            Name: patient.Name,
-            BloodGroup: patient.BloodGroup,
-            InsulinData: iData,
-            docType:patient.docType
-        }
-
-        return ctx.stub.putState(_ID, Buffer.from(JSON.stringify(updatedPatient)));
+        patient.InsulinData = iData
+        return ctx.stub.putState(_ID, Buffer.from(JSON.stringify(patient)));
     }
 
     // DeletePatient deletes an given asset from the world state.
