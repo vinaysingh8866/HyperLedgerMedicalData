@@ -79,18 +79,18 @@ export class DataTransferContract extends Contract {
     // }
 
     // // @notice ReadPatient returns the patient stored in the world state with given _ID.
-    // @Transaction(false)
-    // public async ReadPatient(ctx: Context, _ID: string): Promise<Patient> {
-    //     const patientJSON = await ctx.stub.getState(_ID);
+    @Transaction(false)
+    public async ReadPatient(ctx: Context, _ID: string): Promise<Patient> {
+        const patientJSON = await ctx.stub.getState(_ID);
 
-    //     if (!patientJSON || patientJSON.length === 0) {
-    //         throw new Error(`The asset ${_ID} does not exist`);
-    //     }
+        if (!patientJSON || patientJSON.length === 0) {
+            throw new Error(`The asset ${_ID} does not exist`);
+        }
 
-    //     let jsonObj: any = JSON.parse(patientJSON.toString());
-    //     let patient: Patient = <Patient>jsonObj;
-    //     return patient;
-    // }
+        let jsonObj: any = JSON.parse(patientJSON.toString());
+        let patient: Patient = <Patient>jsonObj;
+        return patient;
+    }
 
     // // @notice UpdateAsset updates an existing asset in the world state with prov_IDed parameters.
     // @Transaction()
@@ -108,20 +108,20 @@ export class DataTransferContract extends Contract {
     // }
 
     // // DeletePatient deletes an given asset from the world state.
-    // @Transaction()
-    // public async DeletePatient(ctx: Context, _ID: string): Promise<void> {
-    //     const exists = await this.PatientExists(ctx, _ID);
-    //     if (!exists) {
-    //         throw new Error(`The asset ${_ID} does not exist`);
-    //     }
-    //     return ctx.stub.deleteState(_ID);
-    // }
+    @Transaction()
+    public async DeletePatient(ctx: Context, _ID: string): Promise<void> {
+        const exists = await this.PatientExists(ctx, _ID);
+        if (!exists) {
+            throw new Error(`The asset ${_ID} does not exist`);
+        }
+        return ctx.stub.deleteState(_ID);
+    }
 
     // //@notice PatientExists returns true when Patent with given ID exists in world state.
-    // @Transaction(false)
-    // @Returns('boolean')
-    // public async PatientExists(ctx: Context, _ID: string): Promise<boolean> {
-    //     const assetJSON = await ctx.stub.getState(_ID);
-    //     return assetJSON && assetJSON.length > 0;
-    // }
+    @Transaction(false)
+    @Returns('boolean')
+    public async PatientExists(ctx: Context, _ID: string): Promise<boolean> {
+        const assetJSON = await ctx.stub.getState(_ID);
+        return assetJSON && assetJSON.length > 0;
+    }
 }

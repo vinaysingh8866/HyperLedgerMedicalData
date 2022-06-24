@@ -240,6 +240,29 @@ app.get( "/create_patient", async ( req, res ) => {
     res.end()
 })
 
+app.post( "/read_patient", async ( req, res ) => {
+    
+    let id = req.query.id.toString()
+    if(id == undefined){
+        res.json({"error":"no id in request"})
+        res.end()
+    }
+
+    let gatewayOpts:GatewayOptions={
+        wallet,
+        identity: org1UserId,
+        discovery: { enabled: true, asLocalhost: true }, // using asLocalhost as this gateway is using a fabric network deployed locally
+    }; 
+
+    await gateway.connect(ccp, gatewayOpts);
+    const network = await gateway.getNetwork(channelName);
+    const contract = network.getContract(chaincodeName);
+    let result = await contract.evaluateTransaction('ReadPatient', id);
+    let temp = prettyJSONString(result.toString())
+    res.json(temp)
+    res.end()
+})
+
 
 
 
