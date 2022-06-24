@@ -13,6 +13,13 @@ export class DataTransferContract extends Contract {
     @Transaction()
     public async InitLedger(ctx: Context): Promise<void> {
         const assets: Patient[] = [
+            {
+                BloodGroup:"b+",
+                EyeColor:"brown",
+                ID:"1",
+                Name:"Vinay",
+                docType:"patient"
+            }
         ];
 
         for (const asset of assets) {
@@ -60,61 +67,61 @@ export class DataTransferContract extends Contract {
         await ctx.stub.putState(_ID, Buffer.from(JSON.stringify(asset)));
     }
 
-    @Transaction()
-    public async CreateDoctor(ctx: Context, _ID: string, _Speciality: string[], _Name: string, _BloodGroup: string): Promise<void> {
-        const asset: Doctor = {
-            ID: _ID,
-            Name: _Name,
-            Speciality:_Speciality,
-            docType:"doctor"
-        };
-        await ctx.stub.putState(_ID, Buffer.from(JSON.stringify(asset)));
-    }
+    // @Transaction()
+    // public async CreateDoctor(ctx: Context, _ID: string, _Speciality: string[], _Name: string, _BloodGroup: string): Promise<void> {
+    //     const asset: Doctor = {
+    //         ID: _ID,
+    //         Name: _Name,
+    //         Speciality:_Speciality,
+    //         docType:"doctor"
+    //     };
+    //     await ctx.stub.putState(_ID, Buffer.from(JSON.stringify(asset)));
+    // }
 
-    // @notice ReadPatient returns the patient stored in the world state with given _ID.
-    @Transaction(false)
-    public async ReadPatient(ctx: Context, _ID: string): Promise<Patient> {
-        const patientJSON = await ctx.stub.getState(_ID);
+    // // @notice ReadPatient returns the patient stored in the world state with given _ID.
+    // @Transaction(false)
+    // public async ReadPatient(ctx: Context, _ID: string): Promise<Patient> {
+    //     const patientJSON = await ctx.stub.getState(_ID);
 
-        if (!patientJSON || patientJSON.length === 0) {
-            throw new Error(`The asset ${_ID} does not exist`);
-        }
+    //     if (!patientJSON || patientJSON.length === 0) {
+    //         throw new Error(`The asset ${_ID} does not exist`);
+    //     }
 
-        let jsonObj: any = JSON.parse(patientJSON.toString());
-        let patient: Patient = <Patient>jsonObj;
-        return patient;
-    }
+    //     let jsonObj: any = JSON.parse(patientJSON.toString());
+    //     let patient: Patient = <Patient>jsonObj;
+    //     return patient;
+    // }
 
-    // @notice UpdateAsset updates an existing asset in the world state with prov_IDed parameters.
-    @Transaction()
-    public async UpdateInsulin(ctx: Context, _ID: string, _InsulinData: Insulin): Promise<void> {
-        const exists = await this.PatientExists(ctx, _ID);
-        if (!exists) {
-            throw new Error(`The asset ${_ID} does not exist`);
-        }
+    // // @notice UpdateAsset updates an existing asset in the world state with prov_IDed parameters.
+    // @Transaction()
+    // public async UpdateInsulin(ctx: Context, _ID: string, _InsulinData: Insulin): Promise<void> {
+    //     const exists = await this.PatientExists(ctx, _ID);
+    //     if (!exists) {
+    //         throw new Error(`The asset ${_ID} does not exist`);
+    //     }
 
-        // overwriting original patient data with new data
-        const patient: Patient = await this.ReadPatient(ctx, _ID)
-        patient.InsulinData.push(_InsulinData)
+    //     // overwriting original patient data with new data
+    //     const patient: Patient = await this.ReadPatient(ctx, _ID)
+    //     patient.InsulinData.push(_InsulinData)
 
-        return ctx.stub.putState(_ID, Buffer.from(JSON.stringify(patient)));
-    }
+    //     return ctx.stub.putState(_ID, Buffer.from(JSON.stringify(patient)));
+    // }
 
-    // DeletePatient deletes an given asset from the world state.
-    @Transaction()
-    public async DeletePatient(ctx: Context, _ID: string): Promise<void> {
-        const exists = await this.PatientExists(ctx, _ID);
-        if (!exists) {
-            throw new Error(`The asset ${_ID} does not exist`);
-        }
-        return ctx.stub.deleteState(_ID);
-    }
+    // // DeletePatient deletes an given asset from the world state.
+    // @Transaction()
+    // public async DeletePatient(ctx: Context, _ID: string): Promise<void> {
+    //     const exists = await this.PatientExists(ctx, _ID);
+    //     if (!exists) {
+    //         throw new Error(`The asset ${_ID} does not exist`);
+    //     }
+    //     return ctx.stub.deleteState(_ID);
+    // }
 
-    //@notice PatientExists returns true when Patent with given ID exists in world state.
-    @Transaction(false)
-    @Returns('boolean')
-    public async PatientExists(ctx: Context, _ID: string): Promise<boolean> {
-        const assetJSON = await ctx.stub.getState(_ID);
-        return assetJSON && assetJSON.length > 0;
-    }
+    // //@notice PatientExists returns true when Patent with given ID exists in world state.
+    // @Transaction(false)
+    // @Returns('boolean')
+    // public async PatientExists(ctx: Context, _ID: string): Promise<boolean> {
+    //     const assetJSON = await ctx.stub.getState(_ID);
+    //     return assetJSON && assetJSON.length > 0;
+    // }
 }

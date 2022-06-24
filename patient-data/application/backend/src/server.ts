@@ -162,16 +162,10 @@ const caClient = buildCAClient(ccp, 'ca.org1.example.com');
 // setup the wallet to hold the credentials of the application user
 let wallet;
 let gateway = new Gateway();
-let gatewayOpts:GatewayOptions;
+
 buildWallet(walletPath).then((_wallet)=>{
-  enrollAdmin(caClient, _wallet, mspOrg1)
-  wallet = _wallet;
-  gatewayOpts = {
-    wallet,
-    identity: org1UserId,
-    discovery: { enabled: true, asLocalhost: true }, // using asLocalhost as this gateway is using a fabric network deployed locally
-};
-})
+    wallet = _wallet;
+  })
 
 
 
@@ -183,8 +177,14 @@ const port = 8080;
 app.listen( port, () => {
     console.log( `server started at http://localhost:${ port }` );
 } );      
-app.get( "/", async ( req, res ) => {
-
+app.get( "/init", async ( req, res ) => {
+    await enrollAdmin(caClient, wallet, mspOrg1)
+    await registerAndEnrollUser(caClient, wallet, mspOrg1, org1UserId, 'org1.department1')
+    let gatewayOpts:GatewayOptions={
+        wallet,
+        identity: org1UserId,
+        discovery: { enabled: true, asLocalhost: true }, // using asLocalhost as this gateway is using a fabric network deployed locally
+    }; 
     await gateway.connect(ccp, gatewayOpts);
 
     // Build a network instance based on the channel where the smart contract is deployed
@@ -200,9 +200,45 @@ app.get( "/", async ( req, res ) => {
     console.log('\n--> Submit Transaction: InitLedger, function creates the initial set of assets on the ledger');
     await contract.submitTransaction('InitLedger');
     console.log('*** Result: committed');
-    return 'OK';
+    res.json({"result":"ok"})
+    res.end()
 } );
 
+app.get( "/all", async ( req, res ) => {
+
+    let gatewayOpts:GatewayOptions={
+        wallet,
+        identity: org1UserId,
+        discovery: { enabled: true, asLocalhost: true }, // using asLocalhost as this gateway is using a fabric network deployed locally
+    }; 
+
+    await gateway.connect(ccp, gatewayOpts);
+    const network = await gateway.getNetwork(channelName);
+    const contract = network.getContract(chaincodeName);
+    let result = await contract.evaluateTransaction('GetAllAssets');
+    let temp = prettyJSONString(result.toString())
+    console.log((temp))
+    res.json(temp)
+    res.end()
+
+})
+
+app.get( "/create_patient", async ( req, res ) => {
+    let gatewayOpts:GatewayOptions={
+        wallet,
+        identity: org1UserId,
+        discovery: { enabled: true, asLocalhost: true }, // using asLocalhost as this gateway is using a fabric network deployed locally
+    }; 
+
+    await gateway.connect(ccp, gatewayOpts);
+    const network = await gateway.getNetwork(channelName);
+    const contract = network.getContract(chaincodeName);
+    await contract.submitTransaction('CreatePatient', '2', 'yellow', 'KuchBhi',"deadly");
+    let result = await contract.evaluateTransaction('GetAllAssets');
+    let temp = prettyJSONString(result.toString())
+    res.json(temp)
+    res.end()
+})
 
 
 
