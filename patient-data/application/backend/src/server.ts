@@ -239,6 +239,45 @@ app.get( "/create_patient", async ( req, res ) => {
     res.json(temp)
     res.end()
 })
+//need to write chaincode to add doctors
+app.get ("/create_doctor", async (req, res) => {
+    let gatewayOpts:GatewayOptions={
+        wallet,
+        identity: org1UserId,
+        discovery: { enabled: true, asLocalhost: true }, // using asLocalhost as this gateway is using a fabric network deployed locally
+    }; 
+    const network = await gateway.getNetwork(channelName);
+    const contract = network.getContract(chaincodeName);
+    await contract.submitTransaction('createDoctor', 'dentist', '2 years', 'female');
+    let result = await contract.evaluateTransaction('GetAllAssets');
+    let temp = prettyJSONString(result.toString())
+    res.json(temp)
+    res.end()
+
+});
+app.post("/read_doctor", async (req, res) =>{ 
+    let id = req.query.id.toString()
+    if(id == undefined){
+        res.json({"error":"no id in request"})
+        res.end()
+    }
+    let gatewayOpts:GatewayOptions={
+        wallet,
+        identity: org1UserId,
+        discovery: { enabled: true, asLocalhost: true }, // using asLocalhost as this gateway is using a fabric network deployed locally
+    }; 
+
+    await gateway.connect(ccp, gatewayOpts);
+    const network = await gateway.getNetwork(channelName);
+    const contract = network.getContract(chaincodeName);
+    //need to write chaincode
+    let result = await contract.evaluateTransaction('ReadDoctor', id);
+    let temp = prettyJSONString(result.toString())
+    res.json(temp)
+    res.end()
+});
+
+
 
 app.post( "/read_patient", async ( req, res ) => {
     
@@ -261,7 +300,44 @@ app.post( "/read_patient", async ( req, res ) => {
     let temp = prettyJSONString(result.toString())
     res.json(temp)
     res.end()
+});
+app.get ("/delete_patient", async (req, res) => {
+    let id = req.query.id.toString()
+    if(id == undefined){
+        res.json({"error":"no id in request"})
+        res.end()
+    }
+
+    let gatewayOpts:GatewayOptions={
+        wallet,
+        identity: org1UserId,
+        discovery: { enabled: true, asLocalhost: true }, // using asLocalhost as this gateway is using a fabric network deployed locally
+    }; 
+
+    await gateway.connect(ccp, gatewayOpts);
+    const network = await gateway.getNetwork(channelName);
+    const contract = network.getContract(chaincodeName);
+    let result = await contract.evaluateTransaction('DeletePatient', id);
+    let temp = prettyJSONString(result.toString())
+    res.json(temp)
+    res.end()
 })
+/*app.get ("/change_patient", async (req, res) => {
+    let id = req.query.id.toString()
+    if(id == undefined){
+        res.json({"error":"no id in request"})
+        res.end()
+    }
+    let gatewayOpts:GatewayOptions={
+        wallet,
+        identity: org1UserId,
+        discovery: { enabled: true, asLocalhost: true }, // using asLocalhost as this gateway is using a fabric network deployed locally
+    }; 
+    await gateway.connect(ccp, gatewayOpts);
+    const network = await gateway.getNetwork(channelName);
+    const contract = network.getContract(chaincodeName);
+    let result = await contract.evaluateTransaction('ChangePatient', id);
+}) */
 
 
 
