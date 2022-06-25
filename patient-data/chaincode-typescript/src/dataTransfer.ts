@@ -107,7 +107,7 @@ export class DataTransferContract extends Contract {
     //     return ctx.stub.putState(_ID, Buffer.from(JSON.stringify(patient)));
     // }
 
-    // // DeletePatient deletes an given asset from the world state.
+    // DeletePatient deletes an given asset from the world state.
     @Transaction()
     public async DeletePatient(ctx: Context, _ID: string): Promise<void> {
         const exists = await this.PatientExists(ctx, _ID);
@@ -117,7 +117,7 @@ export class DataTransferContract extends Contract {
         return ctx.stub.deleteState(_ID);
     }
 
-    // //@notice PatientExists returns true when Patent with given ID exists in world state.
+    //@notice PatientExists returns true when Patent with given ID exists in world state.
     @Transaction(false)
     @Returns('boolean')
     public async PatientExists(ctx: Context, _ID: string): Promise<boolean> {
