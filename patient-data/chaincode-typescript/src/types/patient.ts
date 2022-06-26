@@ -24,5 +24,9 @@ export class Patient {
     public InsulinData?: Insulin[];
 
     @Property()
+    public key?:string
+    
+    @Property()
     public docType?: string;
+    
 }

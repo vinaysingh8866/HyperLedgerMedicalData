@@ -80,14 +80,23 @@ export class DataTransferContract extends Contract {
 		//  Note - passing a 'nil' value will effectively delete the key from state, therefore we pass null character as value
 		await ctx.stub.putState(typeNameIndexKey, Buffer.from('\u0000'));
     }
+    @Transaction()
+    public async AddPatientKeys(ctx: Context, _ID: string): Promise<void> {
+        const patient = await this.ReadPatient(ctx, _ID)
+        patient.key 
+
+		//  Save index entry to state. Only the key name is needed, no need to store a duplicate copy of the marble.
+		//  Note - passing a 'nil' value will effectively delete the key from state, therefore we pass null character as value
+		await ctx.stub.putState(_ID, Buffer.from(JSON.stringify(patient)));
+    }
 
 
     @Transaction()
-    public async CreateDoctor(ctx: Context, _ID: string, _Speciality: string[], _Name: string, _BloodGroup: string): Promise<void> {
+    public async CreateDoctor(ctx: Context, _ID: string, _Speciality: string, _Name: string, _BloodGroup: string): Promise<void> {
         const asset: Doctor = {
             ID: _ID,
             Name: _Name,
-            Speciality:_Speciality,
+            Speciality:[_Speciality],
             docType:"doctor"
         };
         await ctx.stub.putState(_ID, Buffer.from(JSON.stringify(asset)));
