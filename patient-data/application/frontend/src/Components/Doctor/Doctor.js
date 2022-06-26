@@ -67,13 +67,20 @@ function Doctor() {
             </label>
         </div>
         <div>
-        <label>
-        <input type="radio" id="appointmentConfirmation" name="btnaccept" value={dAcceptAppointment} onChange={handleAppointmentTime1}/>
-         <label for="appointmentConfirmation">Accept</label> 
-        <input type="radio" id="appointmentConfirmation2" name="btnaccept2" value={dRejectAppointment} onChange={handleAppointmentTime2}/>
-        <label for="appointmentConfirmation2">Reject</label> 
-        </label>
+            <label>
+                <input type="radio" id="appointmentConfirmation" name="btnaccept" value={dAcceptAppointment} onChange={handleAppointmentTime1}/>
+                    <label for="appointmentConfirmation">Accept</label> 
+                <input type="radio" id="appointmentConfirmation2" name="btnaccept2" value={dRejectAppointment} onChange={handleAppointmentTime2}/>
+                    <label for="appointmentConfirmation2">Reject</label> 
+            </label>
         </div>
+        <div>
+            <label>
+            <input type="submit" value="Appointment Confirmation" />
+            </label>
+        </div>
+
+    
 
         </form>
         <p>Search Patient</p>
