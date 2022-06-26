@@ -13,6 +13,13 @@ export class DataTransferContract extends Contract {
     @Transaction()
     public async InitLedger(ctx: Context): Promise<void> {
         const assets: Patient[] = [
+            {
+                BloodGroup:"b+",
+                EyeColor:"brown",
+                ID:"1",
+                Name:"Vinay",
+                docType:"patient"
+            }
         ];
 
         for (const asset of assets) {
@@ -49,7 +56,7 @@ export class DataTransferContract extends Contract {
 
     // @notice CreatePatient issues a new Patient to the world state with given details.
     @Transaction()
-    public async CreatePatient(ctx: Context, _ID: string, _EyeColor: string, _Name: string, _BloodGroup: string): Promise<vo_ID> {
+    public async CreatePatient(ctx: Context, _ID: string, _EyeColor: string, _Name: string, _BloodGroup: string): Promise<void> {
         const asset: Patient = {
             ID: _ID,
             EyeColor: _EyeColor,
@@ -60,18 +67,18 @@ export class DataTransferContract extends Contract {
         await ctx.stub.putState(_ID, Buffer.from(JSON.stringify(asset)));
     }
 
-    @Transaction()
-    public async CreateDoctor(ctx: Context, _ID: string, _Speciality: string[], _Name: string, _BloodGroup: string): Promise<vo_ID> {
-        const asset: Doctor = {
-            ID: _ID,
-            Name: _Name,
-            Speciality:_Speciality,
-            docType:"doctor"
-        };
-        await ctx.stub.putState(_ID, Buffer.from(JSON.stringify(asset)));
-    }
+    // @Transaction()
+    // public async CreateDoctor(ctx: Context, _ID: string, _Speciality: string[], _Name: string, _BloodGroup: string): Promise<void> {
+    //     const asset: Doctor = {
+    //         ID: _ID,
+    //         Name: _Name,
+    //         Speciality:_Speciality,
+    //         docType:"doctor"
+    //     };
+    //     await ctx.stub.putState(_ID, Buffer.from(JSON.stringify(asset)));
+    // }
 
-    // @notice ReadPatient returns the patient stored in the world state with given _ID.
+    // // @notice ReadPatient returns the patient stored in the world state with given _ID.
     @Transaction(false)
     public async ReadPatient(ctx: Context, _ID: string): Promise<Patient> {
         const patientJSON = await ctx.stub.getState(_ID);
@@ -85,23 +92,20 @@ export class DataTransferContract extends Contract {
         return patient;
     }
 
-    // @notice UpdateAsset updates an existing asset in the world state with prov_IDed parameters.
-    @Transaction()
-    public async UpdateInsulin(ctx: Context, _ID: string, _InsulinData: Insulin): Promise<void> {
-        const exists = await this.PatientExists(ctx, _ID);
-        if (!exists) {
-            throw new Error(`The asset ${_ID} does not exist`);
-        }
+    // // @notice UpdateAsset updates an existing asset in the world state with prov_IDed parameters.
+    // @Transaction()
+    // public async UpdateInsulin(ctx: Context, _ID: string, _InsulinData: Insulin): Promise<void> {
+    //     const exists = await this.PatientExists(ctx, _ID);
+    //     if (!exists) {
+    //         throw new Error(`The asset ${_ID} does not exist`);
+    //     }
 
-        // overwriting original patient data with new data
+    //     // overwriting original patient data with new data
+    //     const patient: Patient = await this.ReadPatient(ctx, _ID)
+    //     patient.InsulinData.push(_InsulinData)
 
-        const patient: Patient = await this.ReadPatient(ctx, _ID)
-        patient.
-        let iData: Insulin[] = patient.InsulinData
-        iData.push(_InsulinData)
-        patient.InsulinData = iData
-        return ctx.stub.putState(_ID, Buffer.from(JSON.stringify(patient)));
-    }
+    //     return ctx.stub.putState(_ID, Buffer.from(JSON.stringify(patient)));
+    // }
 
     // DeletePatient deletes an given asset from the world state.
     @Transaction()
