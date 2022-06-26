@@ -1,13 +1,39 @@
 import React, { useState } from 'react';
+// import {RSA, RSAKeychain} from 'react-native-rsa-native'
+import {generateRSAKey, publicKeyString} from 'cryptico';
+const PassPhrase = "The Moon is a Harsh Mistress.";
 
+
+
+// The length of the RSA key, in bits.
+
+const Bits = 1024;
+
+
+
+const RSAkey = generateRSAKey(PassPhrase, Bits);
+
+
+
+const PublicKeyString = publicKeyString(RSAkey);
 
 function Patient() {
     var generateKeys = function(){
-        return (Date.now().toString(36) + Math.random().toString(36).substring(2));    
+        // return (Date.now().toString(36) + Math.random().toString(36).substring(2));    
+        // RSA.generateKeys(4096).then(keys => {
+
+        // })
+        // return pubkey;
+        // RSAKeychain.generate(password).then(keys => {
+        //     console.log(keys);
+        // })
+        return PublicKeyString;
+        
     }
     const handleFirstTimeSubmit = (event) =>{
         event.preventDefault();
         //TO-DO verify if the id matches name and dob and get public key from backend.
+        
         alert('Patient id submitted ' + pid + 
         ' DOB : ' + pDob + ' Name: ' + pName + 
         ' keys generated: ' + generateKeys());
