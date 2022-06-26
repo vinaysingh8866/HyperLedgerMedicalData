@@ -2,7 +2,8 @@
     "index": {
         "fields": [
             "docType",
-            "Name"
+            "Name",
+            "Speciality"
         ]
     },
     "ddoc": "indexDoc",

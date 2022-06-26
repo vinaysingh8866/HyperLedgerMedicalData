@@ -6,7 +6,9 @@ import { Context, Contract, Info, Returns, Transaction } from 'fabric-contract-a
 import { Doctor } from './types/doctor';
 import { Insulin } from './types/insulin';
 import { Patient } from './types/patient';
-
+interface query{
+      selector:Patient;  
+}
 @Info({ title: 'DataTransfer', description: 'Smart contract for transfering data' })
 export class DataTransferContract extends Contract {
 
@@ -19,17 +21,12 @@ export class DataTransferContract extends Contract {
                 ID:"1",
                 Name:"Vinay",
                 docType:"patient"
-            },{
-                ID:"2",
-                Name:"VVV",
-                Speciality:["Coding"],
-                docType:"doctor"
             }
         ];
         for (const asset of assets) {
             await ctx.stub.putState(asset.ID, Buffer.from(JSON.stringify(asset)));
             console.info(`Patient ${asset.ID} initialized`);
-            let indexName = 'type~name';
+            let indexName = 'docType~Name';
             let typeNameIndexKey = await ctx.stub.createCompositeKey(indexName, [asset.docType, asset.Name]);
             await ctx.stub.putState(typeNameIndexKey, Buffer.from('\u0000'));
         }
@@ -63,17 +60,18 @@ export class DataTransferContract extends Contract {
 
     // @notice CreatePatient issues a new Patient to the world state with given details.
     @Transaction()
-    public async CreatePatient(ctx: Context, _ID: string, _EyeColor: string, _Name: string, _BloodGroup: string): Promise<void> {
+    public async CreatePatient(ctx: Context, _ID: string, _EyeColor: string, _Name: string, _BloodGroup: string, _dob:string): Promise<void> {
         const asset: Patient = {
             ID: _ID,
             EyeColor: _EyeColor,
             Name: _Name,
             BloodGroup: _BloodGroup,
-            docType:"patient"
+            docType:"patient",
+            dob:_dob
         };
         await ctx.stub.putState(_ID, Buffer.from(JSON.stringify(asset)));
 
-        let indexName = 'type~name';
+        let indexName = 'docType~Name';
 		let typeNameIndexKey = await ctx.stub.createCompositeKey(indexName, [asset.docType, asset.Name]);
 
 		//  Save index entry to state. Only the key name is needed, no need to store a duplicate copy of the marble.
@@ -81,27 +79,26 @@ export class DataTransferContract extends Contract {
 		await ctx.stub.putState(typeNameIndexKey, Buffer.from('\u0000'));
     }
     @Transaction()
-    public async AddPatientKeys(ctx: Context, _ID: string): Promise<void> {
-        const patient = await this.ReadPatient(ctx, _ID)
-        patient.key 
+    public async AddKeys(ctx: Context, _ID: string, _key:string): Promise<void> {
+        const user = await this.ReadPatient(ctx, _ID)
+        user.key = _key
 
-		//  Save index entry to state. Only the key name is needed, no need to store a duplicate copy of the marble.
-		//  Note - passing a 'nil' value will effectively delete the key from state, therefore we pass null character as value
-		await ctx.stub.putState(_ID, Buffer.from(JSON.stringify(patient)));
+		await ctx.stub.putState(_ID, Buffer.from(JSON.stringify(user)));
     }
 
 
     @Transaction()
-    public async CreateDoctor(ctx: Context, _ID: string, _Speciality: string, _Name: string, _BloodGroup: string): Promise<void> {
+    public async CreateDoctor(ctx: Context, _ID: string, _Speciality: string, _Name: string, _dob:string): Promise<void> {
         const asset: Doctor = {
             ID: _ID,
             Name: _Name,
-            Speciality:[_Speciality],
-            docType:"doctor"
+            Speciality:_Speciality,
+            docType:"doctor",
+            dob:_dob
         };
         await ctx.stub.putState(_ID, Buffer.from(JSON.stringify(asset)));
-        let indexName = 'type~name';
-		let typeNameIndexKey = await ctx.stub.createCompositeKey(indexName, [asset.docType, asset.Name]);
+        let indexName = 'docType~Name~Speciality';
+		let typeNameIndexKey = await ctx.stub.createCompositeKey(indexName, [asset.docType, asset.Name, asset.Speciality]);
 
 		//  Save index entry to state. Only the key name is needed, no need to store a duplicate copy of the marble.
 		//  Note - passing a 'nil' value will effectively delete the key from state, therefore we pass null character as value
@@ -147,29 +144,60 @@ export class DataTransferContract extends Contract {
     @Transaction(false)
     public async ReadDoctorByName(ctx: Context, _Name: string): Promise<Object> {
 
-        let coloredAssetResultsIterator = await ctx.stub.getStateByPartialCompositeKey('type~name', [_Name]);
-
-        let responseRange = await coloredAssetResultsIterator.next();
-        let doctors = []
-		while (!responseRange.done) {
-			if (!responseRange || !responseRange.value || !responseRange.value.key) {
-				return;
-			}
-
-			let objectType;
-			let attributes;
-			(
-				{objectType, attributes} = await ctx.stub.splitCompositeKey(responseRange.value.key)
-			);
-
-			doctors.push([objectType,attributes])
-
-		}
-        return doctors
-        
+        let queryString={"selector":{"docType":"", "Name":""}};
+        queryString.selector.docType = 'doctor';
+        queryString.selector.Name = _Name;
+        return await this.GetQueryResultForQueryString(ctx, JSON.stringify(queryString)); //shim.success(queryResults);
         
     }
+    @Transaction(false)
+    public async ReadDoctorBySpeciality(ctx: Context, _Speciality: string): Promise<Object> {
+        let queryString={"selector":{"docType":"", "Speciality":""}};
+        queryString.selector.docType = 'doctor';
+        queryString.selector.Speciality = _Speciality;
+        return await this.GetQueryResultForQueryString(ctx, JSON.stringify(queryString)); //shim.success(queryResults);
+    }
+    async GetQueryResultForQueryString(ctx, queryString) {
 
+		let resultsIterator = await ctx.stub.getQueryResult(queryString);
+		let results = await this._GetAllResults(resultsIterator, false);
+
+		return JSON.stringify(results);
+	}
+    async _GetAllResults(iterator, isHistory) {
+		let allResults = [];
+		let res = await iterator.next();
+		while (!res.done) {
+			if (res.value && res.value.value.toString()) {
+				let jsonRes = {"TxId":"",Timestamp:"", "Value":"", "Key":"", "Record":"" };
+				console.log(res.value.value.toString('utf8'));
+				if (isHistory && isHistory === true) {
+					jsonRes.TxId = res.value.txId;
+					jsonRes.Timestamp = res.value.timestamp;
+					try {
+						jsonRes.Value = JSON.parse(res.value.value.toString('utf8'));
+					} catch (err) {
+						console.log(err);
+						jsonRes.Value = res.value.value.toString('utf8');
+					}
+				} else {
+					jsonRes.Key = res.value.key;
+					try {
+						jsonRes.Record = JSON.parse(res.value.value.toString('utf8'));
+					} catch (err) {
+						console.log(err);
+						jsonRes.Record = res.value.value.toString('utf8');
+					}
+				}
+				allResults.push(jsonRes);
+			}
+			res = await iterator.next();
+		}
+		iterator.close();
+		return allResults;
+	}
+    
+    
 
 
     @Transaction()
@@ -205,10 +233,16 @@ export class DataTransferContract extends Contract {
     @Transaction()
     public async DeletePatient(ctx: Context, _ID: string): Promise<void> {
         const exists = await this.PatientExists(ctx, _ID);
+
+
         if (!exists) {
             throw new Error(`The asset ${_ID} does not exist`);
         }
-        return ctx.stub.deleteState(_ID);
+        let patient = await this.ReadPatient(ctx, _ID)
+        let indexName = 'docType~Name';
+		let typeNameIndexKey = ctx.stub.createCompositeKey(indexName, [patient.docType, patient.Name]);
+
+        return ctx.stub.deleteState(typeNameIndexKey);
     }
 
     //@notice PatientExists returns true when Patent with given ID exists in world state.
