@@ -28,12 +28,35 @@ function Patient() {
     const handleDOBChange = (event) =>{
         setDOB(event.target.value);
     }
+    const handleAppointmentSubmit = (event) =>{
+        setAppointment(event.target.value);
+    }
+
+    const handleDoctorChange = (event) =>{
+        setDoctor (event.target.value);
+    }
+
+    const getCurrentUser = async function () {
+        const currentUser = await Parse.User.current();
+        // Update state variable holding current user
+        setCurrentUser(currentUser);
+        return currentUser;
+      };
+
+      const handleAppointmentDate = (event) =>{
+        setAppointmentdate(event.target.value);
+    }
+
 
     var [pid, setPid]  = useState('');
     var [pName, setPname]  = useState('');
     var [password, setPassword]  = useState('');
     var [pDob, setDOB]  = useState('');
+    var [pDoctor, setDoctor] = useState('');
+    var [pAppointment, setAppointmentdate] = useState('');
     // var [dName, setDname]  = useState('');
+    const [currentUser, setCurrentUser] = useState(null);
+    
 
     return (
         <>
@@ -68,6 +91,30 @@ function Patient() {
             <p>Allow Access</p>
             <p>Revoke Access</p>
             <p>Appointment Create</p>
+            <form onSubmit={handleAppointmentSubmit}>
+                <div>
+                    <label>
+                        Current User:
+                        <input type="text" value={currentUser} onChange={getCurrentUser} />
+                    </label>
+                    <div>
+                   <label>
+                        Doctor:
+                        <select id="doctor-list" name="doctorlist" value={pDoctor} onChange={handleDoctorChange}/>
+                   </label>
+                   </div>
+                   <div>
+                       <label>
+                           Preferred Date and Time:
+                           <input type="datetime-local" value={pAppointment} onChange={handleAppointmentDate}></input>
+                       </label>
+                   </div>
+                   <div>
+                   <input type="submit" value="Appointment Request" />
+                   </div>
+
+                </div>
+            </form>
         </>);
 }
 
