@@ -5,6 +5,15 @@
 import {Object, Property} from 'fabric-contract-api';
 import { Patient } from './patient';
 
+interface Appointments {
+  id: string;
+  abstract: string;
+  date:string;
+  patientId: string;
+  state:string
+}
+
+
 @Object()
 export class Doctor {
 
@@ -22,5 +31,8 @@ export class Doctor {
 
     @Property()
     public docType?: string;
+
+    @Property()
+    public appointments?: Appointments[]
 
 }

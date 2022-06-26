@@ -248,13 +248,14 @@ app.get ("/create_doctor", async (req, res) => {
     }; 
     const network = await gateway.getNetwork(channelName);
     const contract = network.getContract(chaincodeName);
-    await contract.submitTransaction('createDoctor', 'dentist', '2 years', 'female');
+    await contract.submitTransaction('CreateDoctor',"22", 'dentist', '2 years', 'female');
     let result = await contract.evaluateTransaction('GetAllAssets');
     let temp = prettyJSONString(result.toString())
     res.json(temp)
     res.end()
 
 });
+
 app.post("/read_doctor", async (req, res) =>{ 
     let id = req.query.id.toString()
     if(id == undefined){
@@ -272,6 +273,47 @@ app.post("/read_doctor", async (req, res) =>{
     const contract = network.getContract(chaincodeName);
     //need to write chaincode
     let result = await contract.evaluateTransaction('ReadDoctor', id);
+    let temp = prettyJSONString(result.toString())
+    res.json(temp)
+    res.end()
+});
+
+app.post("/read_doctor_by_name", async (req, res) =>{ 
+    let name = req.query.name.toString()
+    if(name == undefined){
+        res.json({"error":"no id in request"})
+        res.end()
+    }
+    
+    let gatewayOpts:GatewayOptions={
+        wallet,
+        identity: org1UserId,
+        discovery: { enabled: true, asLocalhost: true }, // using asLocalhost as this gateway is using a fabric network deployed locally
+    }; 
+
+    await gateway.connect(ccp, gatewayOpts);
+    const network = await gateway.getNetwork(channelName);
+    const contract = network.getContract(chaincodeName);
+    //need to write chaincode
+    let result = await contract.evaluateTransaction('ReadDoctorByName', name);
+    let temp = prettyJSONString(result.toString())
+    res.json(temp)
+    res.end()
+});
+app.get("/read_doctor_by_name", async (req, res) =>{ 
+    
+    
+    let gatewayOpts:GatewayOptions={
+        wallet,
+        identity: org1UserId,
+        discovery: { enabled: true, asLocalhost: true }, // using asLocalhost as this gateway is using a fabric network deployed locally
+    }; 
+
+    await gateway.connect(ccp, gatewayOpts);
+    const network = await gateway.getNetwork(channelName);
+    const contract = network.getContract(chaincodeName);
+    //need to write chaincode
+    let result = await contract.evaluateTransaction('ReadDoctorByName', "Vinay");
     let temp = prettyJSONString(result.toString())
     res.json(temp)
     res.end()
