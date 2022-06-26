@@ -18,6 +18,9 @@ export class Patient {
     public Name: string;
 
     @Property()
+    public dob: string;
+
+    @Property()
     public BloodGroup: string;
 
     @Property()
@@ -25,7 +28,7 @@ export class Patient {
 
     @Property()
     public key?:string
-    
+
     @Property()
     public docType?: string;
     

@@ -21,18 +21,26 @@ export class Doctor {
     public ID: string;
 
     @Property()
-    public Speciality: string[];
+    public Speciality: string;
 
     @Property()
     public Name: string;
 
     @Property()
+    public dob: string;
+
+    @Property()
     public Patients?: Patient[];
+
+    @Property()
+    public appointments?: Appointments[]
+
+    @Property()
+    public key?:string
 
     @Property()
     public docType?: string;
 
-    @Property()
-    public appointments?: Appointments[]
+    
 
 }

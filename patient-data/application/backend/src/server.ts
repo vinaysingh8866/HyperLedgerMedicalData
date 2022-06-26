@@ -143,9 +143,9 @@ const buildWallet = async (walletPath: string): Promise<Wallet> => {
 
 const prettyJSONString = (inputString: string): string => {
     if (inputString) {
-         return JSON.stringify(JSON.parse(inputString), null, 2);
+        return JSON.stringify(JSON.parse(inputString), null, 2);
     } else {
-         return inputString;
+        return inputString;
     }
 };
 
@@ -163,54 +163,47 @@ const caClient = buildCAClient(ccp, 'ca.org1.example.com');
 let wallet;
 let gateway = new Gateway();
 
-buildWallet(walletPath).then((_wallet)=>{
+buildWallet(walletPath).then((_wallet) => {
     wallet = _wallet;
-  })
+})
 
 
 
 //--------------------
 const app = express();
-const port = 8080; 
+const port = 8080;
 
 
-app.listen( port, () => {
-    console.log( `server started at http://localhost:${ port }` );
-} );      
-app.get( "/init", async ( req, res ) => {
+app.listen(port, () => {
+    console.log(`server started at http://localhost:${port}`);
+});
+
+app.get("/init", async (req, res) => {
     await enrollAdmin(caClient, wallet, mspOrg1)
     await registerAndEnrollUser(caClient, wallet, mspOrg1, org1UserId, 'org1.department1')
-    let gatewayOpts:GatewayOptions={
+    let gatewayOpts: GatewayOptions = {
         wallet,
         identity: org1UserId,
         discovery: { enabled: true, asLocalhost: true }, // using asLocalhost as this gateway is using a fabric network deployed locally
-    }; 
+    };
     await gateway.connect(ccp, gatewayOpts);
-
-    // Build a network instance based on the channel where the smart contract is deployed
     const network = await gateway.getNetwork(channelName);
 
-    // Get the contract from the network.
     const contract = network.getContract(chaincodeName);
-
-    // Initialize a set of asset data on the channel using the chaincode 'InitLedger' function.
-    // This type of transaction would only be run once by an application the first time it was started after it
-    // deployed the first time. Any updates to the chaincode deployed later would likely not need to run
-    // an "init" type function.
     console.log('\n--> Submit Transaction: InitLedger, function creates the initial set of assets on the ledger');
     await contract.submitTransaction('InitLedger');
     console.log('*** Result: committed');
-    res.json({"result":"ok"})
+    res.json({ "result": "ok" })
     res.end()
-} );
+});
 
-app.get( "/all", async ( req, res ) => {
+app.get("/all", async (req, res) => {
 
-    let gatewayOpts:GatewayOptions={
+    let gatewayOpts: GatewayOptions = {
         wallet,
         identity: org1UserId,
         discovery: { enabled: true, asLocalhost: true }, // using asLocalhost as this gateway is using a fabric network deployed locally
-    }; 
+    };
 
     await gateway.connect(ccp, gatewayOpts);
     const network = await gateway.getNetwork(channelName);
@@ -223,32 +216,44 @@ app.get( "/all", async ( req, res ) => {
 
 })
 
-app.get( "/create_patient", async ( req, res ) => {
-    let gatewayOpts:GatewayOptions={
+app.post("/create_patient", async (req, res) => {
+    let gatewayOpts: GatewayOptions = {
         wallet,
         identity: org1UserId,
         discovery: { enabled: true, asLocalhost: true }, // using asLocalhost as this gateway is using a fabric network deployed locally
-    }; 
-
+    };
+    let id = req.query.id.toString()
+    let eyeColor = req.query.eyeColor.toString()
+    let name = req.query.name.toString()
+    let bloodType = req.query.bloodType.toString()
+    let dob = req.query.dob.toString()
     await gateway.connect(ccp, gatewayOpts);
     const network = await gateway.getNetwork(channelName);
     const contract = network.getContract(chaincodeName);
-    await contract.submitTransaction('CreatePatient', '2', 'yellow', 'KuchBhi',"deadly");
+    await contract.submitTransaction('CreatePatient', id, eyeColor, name, bloodType, dob);
     let result = await contract.evaluateTransaction('GetAllAssets');
     let temp = prettyJSONString(result.toString())
     res.json(temp)
     res.end()
 })
+
 //need to write chaincode to add doctors
-app.get ("/create_doctor", async (req, res) => {
-    let gatewayOpts:GatewayOptions={
+app.post("/create_doctor", async (req, res) => {
+
+    let gatewayOpts: GatewayOptions = {
         wallet,
         identity: org1UserId,
         discovery: { enabled: true, asLocalhost: true }, // using asLocalhost as this gateway is using a fabric network deployed locally
-    }; 
+    };
+
+    let id = req.query.id.toString()
+    let name = req.query.name.toString()
+    let speciality = req.query.speciality.toString()
+    let dob = req.query.dob.toString()
+
     const network = await gateway.getNetwork(channelName);
     const contract = network.getContract(chaincodeName);
-    await contract.submitTransaction('CreateDoctor',"22", 'dentist', '2 years', 'female');
+    await contract.submitTransaction('CreateDoctor', id, speciality, name, dob);
     let result = await contract.evaluateTransaction('GetAllAssets');
     let temp = prettyJSONString(result.toString())
     res.json(temp)
@@ -256,41 +261,38 @@ app.get ("/create_doctor", async (req, res) => {
 
 });
 
-app.post("/read_doctor", async (req, res) =>{ 
+app.post("/read_doctor", async (req, res) => {
     let id = req.query.id.toString()
-    if(id == undefined){
-        res.json({"error":"no id in request"})
+
+    if (id == undefined) {
+        res.json({ "error": "no id in request" })
         res.end()
     }
-    let gatewayOpts:GatewayOptions={
+
+    let gatewayOpts: GatewayOptions = {
         wallet,
         identity: org1UserId,
         discovery: { enabled: true, asLocalhost: true }, // using asLocalhost as this gateway is using a fabric network deployed locally
-    }; 
+    };
 
     await gateway.connect(ccp, gatewayOpts);
     const network = await gateway.getNetwork(channelName);
     const contract = network.getContract(chaincodeName);
-    //need to write chaincode
+
     let result = await contract.evaluateTransaction('ReadDoctor', id);
     let temp = prettyJSONString(result.toString())
     res.json(temp)
     res.end()
 });
 
-app.post("/read_doctor_by_name", async (req, res) =>{ 
-    let name = req.query.name.toString()
-    if(name == undefined){
-        res.json({"error":"no id in request"})
-        res.end()
-    }
-    
-    let gatewayOpts:GatewayOptions={
+
+app.post("/read_doctor_by_name", async (req, res) => {
+    let gatewayOpts: GatewayOptions = {
         wallet,
         identity: org1UserId,
         discovery: { enabled: true, asLocalhost: true }, // using asLocalhost as this gateway is using a fabric network deployed locally
-    }; 
-
+    };
+    let name = req.query.name.toString()
     await gateway.connect(ccp, gatewayOpts);
     const network = await gateway.getNetwork(channelName);
     const contract = network.getContract(chaincodeName);
@@ -300,20 +302,19 @@ app.post("/read_doctor_by_name", async (req, res) =>{
     res.json(temp)
     res.end()
 });
-app.get("/read_doctor_by_name", async (req, res) =>{ 
-    
-    
-    let gatewayOpts:GatewayOptions={
+
+app.post("/read_doctor_by_speciality", async (req, res) => {
+    let gatewayOpts: GatewayOptions = {
         wallet,
         identity: org1UserId,
         discovery: { enabled: true, asLocalhost: true }, // using asLocalhost as this gateway is using a fabric network deployed locally
-    }; 
-
+    };
+    let speciality = req.query.speciality.toString()
     await gateway.connect(ccp, gatewayOpts);
     const network = await gateway.getNetwork(channelName);
     const contract = network.getContract(chaincodeName);
     //need to write chaincode
-    let result = await contract.evaluateTransaction('ReadDoctorByName', "Vinay");
+    let result = await contract.evaluateTransaction('ReadDoctorBySpeciality', speciality);
     let temp = prettyJSONString(result.toString())
     res.json(temp)
     res.end()
@@ -321,19 +322,18 @@ app.get("/read_doctor_by_name", async (req, res) =>{
 
 
 
-app.post( "/read_patient", async ( req, res ) => {
-    
+app.post("/read_patient", async (req, res) => {
     let id = req.query.id.toString()
-    if(id == undefined){
-        res.json({"error":"no id in request"})
+    if (id == undefined) {
+        res.json({ "error": "no id in request" })
         res.end()
     }
 
-    let gatewayOpts:GatewayOptions={
+    let gatewayOpts: GatewayOptions = {
         wallet,
         identity: org1UserId,
         discovery: { enabled: true, asLocalhost: true }, // using asLocalhost as this gateway is using a fabric network deployed locally
-    }; 
+    };
 
     await gateway.connect(ccp, gatewayOpts);
     const network = await gateway.getNetwork(channelName);
@@ -343,18 +343,20 @@ app.post( "/read_patient", async ( req, res ) => {
     res.json(temp)
     res.end()
 });
-app.get ("/delete_patient", async (req, res) => {
+
+app.post("/delete_patient", async (req, res) => {
     let id = req.query.id.toString()
-    if(id == undefined){
-        res.json({"error":"no id in request"})
+
+    if (id == undefined) {
+        res.json({ "error": "no id in request" })
         res.end()
     }
 
-    let gatewayOpts:GatewayOptions={
+    let gatewayOpts: GatewayOptions = {
         wallet,
         identity: org1UserId,
         discovery: { enabled: true, asLocalhost: true }, // using asLocalhost as this gateway is using a fabric network deployed locally
-    }; 
+    };
 
     await gateway.connect(ccp, gatewayOpts);
     const network = await gateway.getNetwork(channelName);
@@ -364,6 +366,7 @@ app.get ("/delete_patient", async (req, res) => {
     res.json(temp)
     res.end()
 })
+
 /*app.get ("/change_patient", async (req, res) => {
     let id = req.query.id.toString()
     if(id == undefined){
