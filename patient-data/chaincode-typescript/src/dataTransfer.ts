@@ -179,6 +179,11 @@ export class DataTransferContract extends Contract {
         await ctx.stub.putState(_doctorId, Buffer.from(JSON.stringify(doctor)));
     }
 
+    @Transaction()
+    public async DeleteDoctor(ctx: Context, _ID: string): Promise<void> {
+        return ctx.stub.deleteState(_ID);
+    }
+
 
 
     // @notice UpdateAsset updates an existing asset in the world state with prov_IDed parameters.
