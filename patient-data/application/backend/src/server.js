@@ -44,6 +44,16 @@ var express = require("express");
 var app = express();
 var port = 8080; // default port to listen
 // define a route handler for the default home page
+const cors = require('cors');
+
+var corsOptions = {
+    "origin": "*",
+    "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+    "preflightContinue": false,
+    "optionsSuccessStatus": 204
+  }
+
+app.use(cors(corsOptions));
 // start the Express server
 app.listen(port, function () {
     console.log("server started at http://localhost:".concat(port));
