@@ -6,7 +6,7 @@ export const fetchReadDoctor = (id) => {
     // if(!isLoading){
     //     isLoading = true;
         axios
-            .post(backendUrl+"/read_doctor/id=" + id)
+            .post(backendUrl+"/read_doctor?id=" + id)
             .then((res) => {
                 console.log(res);
                 // isLoading = false;
@@ -26,7 +26,7 @@ export const fetchReadPatient = (id) => {
     // if(!isLoading){
     //     isLoading = true;
         axios
-            .post(backendUrl+"/read_patient/id=" + id)
+            .post(backendUrl+"/read_patient?id=" + id)
             .then((res) => {
                 console.log(res);
                 // isLoading = false;
