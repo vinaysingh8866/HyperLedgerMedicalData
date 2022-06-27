@@ -1,5 +1,16 @@
 
 import React, { useState } from 'react';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import Typography from '@mui/material/Typography';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 
 /**  @Property()
     public ID: string;
@@ -85,7 +96,93 @@ function Hospital() {
 
     return (
         <>
-            <p>Register Patient</p>
+        <Accordion>
+                <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
+                >
+                    <Typography>Register Patient</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <Box
+                        component="form"
+                        sx={{
+                            marginTop: 8,
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                        }}
+                        onSubmit={handlePatientSubmit}
+                        noValidate
+                        autoComplete="off"
+                    >
+                        <div>
+                            <TextField
+                                required
+                                id="pName"
+                                label="Name"
+                                variant="standard"
+                                value={pName}
+                                onChange={handlePatientChange}
+                            />
+                        </div>
+                        <div>
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                sx={{ mt: 3, mb: 2 }}
+                            >
+                                Submit
+                            </Button>
+                        </div>
+                    </Box>
+                </AccordionDetails>
+            </Accordion>
+            <Accordion>
+                <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
+                >
+                    <Typography>Doctor's Registeration</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <Box
+                        component="form"
+                        sx={{
+                            marginTop: 8,
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                        }}
+                        onSubmit={handleDoctorSubmit}
+                        noValidate
+                        autoComplete="off"
+                    >
+                        <div>
+                            <TextField
+                                required
+                                id="dName"
+                                label="Name"
+                                variant="standard"
+                                value={dName}
+                                onChange={handleDoctorChange}
+                            />
+                        </div>
+                        <div>
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                sx={{ mt: 3, mb: 2 }}
+                            >
+                                Submit
+                            </Button>
+                        </div>
+                    </Box>
+                </AccordionDetails>
+            </Accordion>
+            {/* <p>Register Patient</p>
             <form onSubmit={handlePatientSubmit}>
                 <div>
                     <label>
@@ -93,12 +190,6 @@ function Hospital() {
                         <input type="text" value={pName} onChange={handlePatientChange} />
                     </label>
                 </div>
-                {/* <div>
-                    <label>
-                        Name:
-                        <input type="text" value={pName} onChange={handlePatientChange} />
-                    </label>
-                </div>
                 <div>
                     <label>
                         Name:
@@ -110,7 +201,13 @@ function Hospital() {
                         Name:
                         <input type="text" value={pName} onChange={handlePatientChange} />
                     </label>
-                </div> */}
+                </div>
+                <div>
+                    <label>
+                        Name:
+                        <input type="text" value={pName} onChange={handlePatientChange} />
+                    </label>
+                </div>
                 <input type="submit" value="Submit" />
             </form>
             <p>Register Doctor</p>
@@ -120,7 +217,7 @@ function Hospital() {
                     <input type="text" value={dName} onChange={handleDoctorChange} />
                 </label>
                 <input type="submit" value="Submit" />
-            </form>
+            </form> */}
         </>);
 }
 
