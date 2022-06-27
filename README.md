@@ -7,11 +7,6 @@ A patient and doctor management system which shares data between hospitals using
 
 
 
-## Screenshots
-
-![State Diagram](https://raw.githubusercontent.com/vinaysingh8866/HyperLedgerMedicalData/main/State%20Diagram.jpg)
-
-
 ## Running
 
 
@@ -60,4 +55,16 @@ Running front-end patient-data/application/frontend
 yarn 
 yarn start
 ```
+
+
+## State Diagram
+
+![State Diagram](https://raw.githubusercontent.com/vinaysingh8866/HyperLedgerMedicalData/main/State%20Diagram.jpg)
+
+
+## ScrrenShots
+
+![Patient ](https://raw.githubusercontent.com/vinaysingh8866/HyperLedgerMedicalData/main/PatientScreen.png)
+![Hospital ](https://raw.githubusercontent.com/vinaysingh8866/HyperLedgerMedicalData/main/HospitalScreen.png)
+
 
