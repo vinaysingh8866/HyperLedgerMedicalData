@@ -6,7 +6,9 @@ A patient and doctor management system which shares data between hospitals using
 3. Doctor
 
 Hospital - Under this entity, Patients and Doctors get registered on the system and unique ID gets generated. 
+
 Patient - This entity holds all the data related to patient. It enable patients to create appointments and select appropriate doctor based on the speciality. Patient can create appointment as per his preference and if new date/time suggested by doctor, he can accept/reject the suggested date/time.
+
 Doctor - Under this entity, It holds doctor list and appointment list created by patinet. Each doctor can see appointments on his name and can have ability to accept/reject appointment or suggest a new date and time for it.
 
 
