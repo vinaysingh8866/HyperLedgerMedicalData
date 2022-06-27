@@ -16,10 +16,10 @@ export const fetchReadDoctor = (id) => {
                 backendUrl
                 +"/read_doctor?id=" + id,{},{headers:headers})
             .then((res) => {
-                console.log(res);
+                console.log(res.data);
                 // isLoading = false;
-                console.log(res);
-                return res;
+                // console.log(res);
+                return res.data;
             })
             .catch((err) => {
                 // isLoading = false;
@@ -36,10 +36,10 @@ export const fetchReadPatient = (id) => {
         axios
             .post(backendUrl+"/read_patient?id=" + id,{},{headers:headers})
             .then((res) => {
-                console.log(res);
+                console.log(res.data);
                 // isLoading = false;
                 // console.log(res);
-                return res;
+                return res.data;
             })
             .catch((err) => {
                 // isLoading = false;

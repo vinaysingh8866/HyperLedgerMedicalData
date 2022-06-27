@@ -41,7 +41,7 @@ function Patient() {
 
     // }
 
-    const handleFirstTimeSubmit = (event) => {
+    const handleFirstTimeSubmit = async (event) => {
         event.preventDefault();
         const Bits = 1024;
         if (password.length >= 0) {
@@ -52,7 +52,7 @@ function Patient() {
             alert('Patient id submitted ' + pid +
                 ' DOB : ' + pDob + ' Name: ' + pName +
                 ' keys generated: ' + PublicKeyString);
-            console.log(fetchReadPatient(1));
+            console.log(await fetchReadPatient(1));
         }
 
     };
