@@ -69,7 +69,7 @@ yarn start
 - [@vinaysingh8866](https://github.com/vinaysingh8866/)
 - [@Tarandeep100](https://github.com/Tarandeep100/)
 - [@Shweta-source-byte](https://github.com/Shweta-source-byte)
-- [@Dimitri]
+- [@Dmitri]
 - [@Muhammad]
 
 ## State Diagram
