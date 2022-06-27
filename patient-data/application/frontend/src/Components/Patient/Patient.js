@@ -11,7 +11,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import { fetchReadDoctor } from '../../api/Common';
+import { fetchReadDoctor, fetchReadPatient } from '../../api/Common';
 
 
 function Patient() {
@@ -52,6 +52,7 @@ function Patient() {
             alert('Patient id submitted ' + pid +
                 ' DOB : ' + pDob + ' Name: ' + pName +
                 ' keys generated: ' + PublicKeyString);
+            console.log(fetchReadPatient(1));
         }
 
     };
@@ -75,7 +76,7 @@ function Patient() {
         // setAppointment(event.target.value);
         event.preventDefault();
         alert('appointment submitted');
-        console.log(fetchReadDoctor(1));
+        // console.log(fetchReadDoctor(1));
     }
 
     const handleDoctorChange = (event) => {
