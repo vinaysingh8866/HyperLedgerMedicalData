@@ -64,7 +64,13 @@ Running front-end patient-data/application/frontend
 yarn 
 yarn start
 ```
+## Author
 
+- [@vinaysingh8866](https://github.com/vinaysingh8866/)
+- [@Tarandeep100](https://github.com/Tarandeep100/)
+- [@Shweta-source-byte](https://github.com/Shweta-source-byte)
+- [@Dimitri]
+- [@Muhammad]
 
 ## State Diagram
 
