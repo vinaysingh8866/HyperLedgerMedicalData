@@ -93,7 +93,7 @@ function Hospital() {
                         <input type="text" value={pName} onChange={handlePatientChange} />
                     </label>
                 </div>
-                <div>
+                {/* <div>
                     <label>
                         Name:
                         <input type="text" value={pName} onChange={handlePatientChange} />
@@ -110,7 +110,7 @@ function Hospital() {
                         Name:
                         <input type="text" value={pName} onChange={handlePatientChange} />
                     </label>
-                </div>
+                </div> */}
                 <input type="submit" value="Submit" />
             </form>
             <p>Register Doctor</p>
