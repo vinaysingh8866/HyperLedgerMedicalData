@@ -1,12 +1,20 @@
 import axios from "axios";
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL
+
+const headers = {
+    'Content-Type': 'application/json',
+    // 'Authorization': 'JWT fefege...'
+  }
 // var isLoading = false;
 export const fetchReadDoctor = (id) => {
     // if(!isLoading){
     //     isLoading = true;
         axios
-            .post(backendUrl+"/read_doctor?id=" + id)
+            .post(
+                // "http://localhost:8080"
+                backendUrl
+                +"/read_doctor?id=" + id,{},{headers:headers})
             .then((res) => {
                 console.log(res);
                 // isLoading = false;
