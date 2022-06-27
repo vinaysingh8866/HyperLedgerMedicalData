@@ -34,7 +34,7 @@ export const fetchReadPatient = (id) => {
     // if(!isLoading){
     //     isLoading = true;
         axios
-            .post(backendUrl+"/read_patient?id=" + id)
+            .post(backendUrl+"/read_patient?id=" + id,{},{headers:headers})
             .then((res) => {
                 console.log(res);
                 // isLoading = false;
