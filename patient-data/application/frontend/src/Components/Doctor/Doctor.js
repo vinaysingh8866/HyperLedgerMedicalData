@@ -50,10 +50,97 @@ function Doctor() {
 
     return (
         <>
-            <p>Get Patient</p>
-            <p>Update Data</p>
-            <p>Appointment Confirmation</p>
-            <form onSubmit={handleAppointmentConfirmationSubmit}>
+            <Accordion>
+                <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
+                >
+                    <Typography>Get Patient</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+
+                </AccordionDetails>
+            </Accordion>
+            <Accordion>
+                <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
+                >
+                    <Typography>Search Patient</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+
+                </AccordionDetails>
+            </Accordion>
+            <Accordion>
+                <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
+                >
+                    <Typography>Update Data</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+
+                </AccordionDetails>
+            </Accordion>
+            <Accordion>
+                <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
+                >
+                    <Typography>Appointment Creation</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <Box
+                        component="form"
+                        sx={{
+                            marginTop: 8,
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                        }}
+                        onSubmit={handleAppointmentConfirmationSubmit}
+                        noValidate
+                        autoComplete="off"
+                    >
+                        <div>
+                            <label>
+                                Appointments:
+                                <select id="appointment-list" name="appointmentlist" value={dAppointmentlist} onChange={handleAppointmentList} />
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                Preferred Date and Time:
+                                <input type="datetime-local" value={dPreferredappointment} onChange={handlePreferredAppointment}></input>
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <input type="radio" id="appointmentConfirmation" name="btnaccept" value={dAcceptAppointment} onChange={handleAppointmentTime1} />
+                                <label for="appointmentConfirmation">Accept</label>
+                                <input type="radio" id="appointmentConfirmation2" name="btnaccept2" value={dRejectAppointment} onChange={handleAppointmentTime2} />
+                                <label for="appointmentConfirmation2">Reject</label>
+                            </label>
+                        </div>
+                        
+                        <div>
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                sx={{ mt: 3, mb: 2 }}
+                            >
+                                Submit
+                            </Button>
+                        </div>
+                    </Box>
+                </AccordionDetails>
+            </Accordion>
+            {/* <form onSubmit={handleAppointmentConfirmationSubmit}>
                 <div>
                     <label>
                         Appointments:
@@ -82,8 +169,7 @@ function Doctor() {
 
 
 
-            </form>
-            <p>Search Patient</p>
+            </form> */}
             {/* <p>First Time Login</p>
             <form onSubmit={handleFirstTimeSubmit}>
                 <div>
