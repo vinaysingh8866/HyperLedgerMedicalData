@@ -323,6 +323,7 @@ app.post("/read_doctor_by_speciality", async (req, res) => {
 
 
 app.post("/read_patient", async (req, res) => {
+    console.log("read patient!")
     let id = req.query.id.toString()
     if (id == undefined) {
         res.json({ "error": "no id in request" })
