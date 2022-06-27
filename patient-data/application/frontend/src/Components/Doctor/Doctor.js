@@ -22,6 +22,7 @@ function Doctor() {
     // }
     const handleAppointmentConfirmationSubmit = (event) => {
         //setAppointment(event.target.value);
+        event.preventDefault();
     }
 
     const handleAppointmentList = (event) => {
